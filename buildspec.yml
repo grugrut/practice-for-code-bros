@@ -7,11 +7,12 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws --version
-      - $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+      - REGISTORY_URI=066582408312.dkr.ecr.ap-northeast-1.amazonaws.com
       - IMAGE_NAME=code-bros-ecr-repository
-      - REPOSITORY_URI=066582408312.dkr.ecr.ap-northeast-1.amazonaws.com/${IMAGE_NAME}
+      - REPOSITORY_URI=${REGISTORY_URI}/${IMAGE_NAME}
       - COMMIT_HASH=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION})
+      - aws --version
+      - $(aws ecr get-login-password | docker login --username AWS --password-stdin ${REGISTORY_URI})
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
     commands:
